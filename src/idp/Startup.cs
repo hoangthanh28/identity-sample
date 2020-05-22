@@ -1,6 +1,10 @@
+using IdentityServer.Application.Repository.Abstraction;
+using IdentityServer.Domain.Entity;
+using IdentityServer.Persistence.Context;
+using IdentityServer.Persistence.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +16,7 @@ namespace IdentityServer
     public class Startup
     {
         public IConfiguration Configuration { get; }
-        public static readonly ILogger _logger = LoggerFactory.Create(builder => { builder.AddConsole(); }).CreateLogger("Startup");
+        //public static readonly ILogger _logger = LoggerFactory.Create(builder => { builder.AddConsole(); }).CreateLogger("Startup");
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -22,8 +26,17 @@ namespace IdentityServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAuthorization();
+            services.AddControllersWithViews();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
+            services.AddDbContext<UserDbContext>((service, option) =>
+            {
+                var configuration = service.GetService<IConfiguration>();
+                var connectionString = Configuration["ConnectionStrings:Idp"];
+                option.UseSqlServer(connectionString);
+            });
+
             var connectionString = Configuration["ConnectionStrings:Idp"];
-            _logger.LogInformation($"Idp connection: {connectionString}");
             services.AddIdentityServer()
                 // add credentials
                 .AddDeveloperSigningCredential()
@@ -48,18 +61,17 @@ namespace IdentityServer
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseIdentityServer();
             app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
-            });
+           {
+               endpoints.MapControllerRoute(
+                   name: "default",
+                   pattern: "{controller=Home}/{action=Index}/{id?}");
+           });
         }
     }
 }

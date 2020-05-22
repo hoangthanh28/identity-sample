@@ -12,8 +12,8 @@ var configuration = Argument<string>("configuration", "Release");
 var output = Argument<string>("output", "output");
 var sqlFolder = Argument<string>("sql", "sql");
 var projectFiles = Argument<string>("projects", "./**/*.csproj").Split(',');
-var connectionString = EnvironmentVariable("ConnectionString__Idp")?? "Server=(localdb)\\mssqllocaldb;Database=Idp_AutomationTests;Trusted_Connection=True;ConnectRetryCount=0";
-var masterConnectionString = EnvironmentVariable("ConnectionString__Master")?? "Server=(localdb)\\mssqllocaldb;Database=Idp_AutomationTests;Trusted_Connection=True;ConnectRetryCount=0";
+var connectionString = EnvironmentVariable("ConnectionString__Idp")?? "Server=127.0.0.1;Database=Idp;User=sa;Password=Pass1234$;TrustServerCertificate=True";
+var masterConnectionString = EnvironmentVariable("ConnectionString__Master")?? "Server=127.0.0.1;Database=master;User=sa;Password=Pass1234$;TrustServerCertificate=True";
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -156,7 +156,7 @@ Task("Migrate")
     var settings = new RoundhouseSettings {
         ConnectionString = connectionString,
         ConnectionStringAdmin = masterConnectionString,
-        DoNotCreateDatabase=true,
+        DoNotCreateDatabase=false,
         Silent=true,
         Drop=false,
         Debug=false,
