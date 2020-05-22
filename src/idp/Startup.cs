@@ -37,7 +37,10 @@ namespace IdentityServer
             });
 
             var connectionString = Configuration["ConnectionStrings:Idp"];
-            services.AddIdentityServer()
+            services.AddIdentityServer(option =>
+            {
+                option.IssuerUri = "idp";
+            })
                 // add credentials
                 .AddDeveloperSigningCredential()
                 .AddConfigurationStore(options =>

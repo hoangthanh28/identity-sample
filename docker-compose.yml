@@ -28,10 +28,33 @@ services:
       restart_policy:
         condition: on-failure
     ports:
-      - "8080:80"
+      - "8081:80"
     depends_on:
       - db  
     networks:
-      - idpnet   
+      - idpnet
+  product:
+    # replace username/repo:tag with your name and image details
+    build: 
+      context: .
+      dockerfile: dockerfiles/api/Product
+    image: api/product
+    environment:
+      Idp__Authority: "http://idp"
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "10001:80"
+    depends_on:
+      - idp
+      - db  
+    networks:
+      - idpnet       
 networks:
   idpnet:
