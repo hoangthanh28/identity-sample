@@ -1,7 +1,10 @@
+using System.Collections.Generic;
 using IdentityServer.Application.Repository.Abstraction;
 using IdentityServer.Domain.Entity;
+using IdentityServer.Model;
 using IdentityServer.Persistence.Context;
 using IdentityServer.Persistence.Repository;
+using IdentityServer4;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -55,6 +58,48 @@ namespace IdentityServer
                     options.EnableTokenCleanup = true;
                     options.TokenCleanupInterval = 3600; // interval in seconds (default is 3600)
                 });
+            var externalProviders = new List<ExternalProviderConfig>();
+
+            Configuration.GetSection("Providers").Bind(externalProviders);
+
+            var builder = services.AddAuthentication();
+            foreach (var provider in externalProviders)
+            {
+                switch (provider.Name)
+                {
+                    case "aad":
+                        builder.AddOpenIdConnect(provider.Name, provider.Description, options =>
+                                 {
+                                     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                                     options.SignOutScheme = IdentityServerConstants.SignoutScheme;
+                                     options.ClientId = provider.ClientId;
+                                     options.Authority = provider.Authority;
+                                     options.ClientSecret = provider.ClientSecret;
+                                     options.ResponseType = "code";
+                                     options.RequireHttpsMetadata = true;
+                                     options.CallbackPath = $"/signin-{provider.Name}";
+                                     options.SignedOutCallbackPath = $"/signout-callback-{provider.Name}";
+                                     options.RemoteSignOutPath = $"/signout-{provider.Name}";
+                                 });
+                        break;
+                    case "google":
+                        builder.AddGoogle(options =>
+                        {
+                            options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                            options.ClientId = provider.ClientId;
+                            options.ClientSecret = provider.ClientSecret;
+                        });
+                        break;
+                    case "facebook":
+                        builder.AddFacebook(options =>
+                        {
+                            options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                            options.ClientId = provider.ClientId;
+                            options.ClientSecret = provider.ClientSecret;
+                        });
+                        break;
+                }
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
