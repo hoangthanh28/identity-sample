@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -9,9 +10,11 @@ namespace product_service.Controllers
     [Authorize(AuthenticationSchemes = "oidc")]
     public class ProductsController : ControllerBase
     {
-        private static readonly string[] _products = new[]
+        private static readonly IEnumerable<ProductModel> _products = new List<ProductModel>()
         {
-            "Pizza", "Cheese", "Milk"
+            new ProductModel(){Id = 1, Name =  "Pizza"},
+            new ProductModel(){Id = 2, Name =  "Cheese"},
+            new ProductModel(){Id = 3, Name = "Hotpot"},
         };
 
         private readonly ILogger<ProductsController> _logger;
@@ -26,5 +29,10 @@ namespace product_service.Controllers
         {
             return Ok(_products);
         }
+    }
+    public class ProductModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

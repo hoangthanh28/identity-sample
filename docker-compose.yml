@@ -12,13 +12,7 @@ services:
       - idpnet
   idp:
     # replace username/repo:tag with your name and image details
-    build: 
-      context: .
-      dockerfile: dockerfiles/idp/Dockerfile
     image: idp-server
-    environment:
-      ASPNETCORE_ENVIRONMENT: "Production"
-      ConnectionStrings__Idp: "Server=db;Database=Idp;User=sa;Password=Pass1234$$;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;"
     deploy:
       replicas: 2
       resources:
@@ -27,20 +21,12 @@ services:
           memory: 50M
       restart_policy:
         condition: on-failure
-    ports:
-      - "8081:80"
     depends_on:
       - db  
     networks:
       - idpnet
   product:
-    # replace username/repo:tag with your name and image details
-    build: 
-      context: .
-      dockerfile: dockerfiles/api/Product
     image: api/product
-    environment:
-      Idp__Authority: "http://idp"
     deploy:
       replicas: 2
       resources:
@@ -49,8 +35,6 @@ services:
           memory: 50M
       restart_policy:
         condition: on-failure
-    ports:
-      - "10001:80"
     depends_on:
       - idp
       - db  
