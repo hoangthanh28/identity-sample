@@ -65,7 +65,7 @@ namespace IdentityServer
             var builder = services.AddAuthentication();
             foreach (var provider in externalProviders)
             {
-                switch (provider.Name)
+                switch (provider.Name.ToLowerInvariant())
                 {
                     case "aad":
                         builder.AddOpenIdConnect(provider.Name, provider.Description, options =>
@@ -100,6 +100,15 @@ namespace IdentityServer
                         break;
                 }
             }
+            services.AddCors(o => o.AddPolicy("CorsPolicy", cor =>
+           {
+               var hosts = new List<string>();
+               Configuration.GetSection("AllowedHosts").Bind(hosts);
+               cor.WithOrigins(hosts.ToArray())
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials();
+           }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -111,6 +120,7 @@ namespace IdentityServer
             }
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseCors("CorsPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseIdentityServer();

@@ -31,6 +31,15 @@ namespace product_service
                  options.Authority = Configuration["Idp:Authority"];
                  options.RequireHttpsMetadata = options.Authority.Contains("https") ? true : false;
              });
+            services.AddCors(o => o.AddPolicy("CorsPolicy", cor =>
+         {
+             var hosts = new List<string>();
+             Configuration.GetSection("AllowedHosts").Bind(hosts);
+             cor.WithOrigins(hosts.ToArray())
+             .AllowAnyMethod()
+             .AllowAnyHeader()
+             .AllowCredentials();
+         }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,7 +53,7 @@ namespace product_service
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseCors("CorsPolicy");
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
