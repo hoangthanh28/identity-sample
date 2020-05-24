@@ -60,9 +60,9 @@ class NavMenu extends Component<NavProps, NavStates> {
     }
 }
 const mapStateToProps = (store: any) => {
-    const { auth } = store;
+    const { oidc } = store;
     return {
-        user: auth.user
+        user: oidc.user
     };
 };
 export default connect(mapStateToProps)(NavMenu);

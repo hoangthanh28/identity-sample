@@ -17,11 +17,9 @@ class Product extends Component<ProductProps, ProductStates> {
   static displayName = Product.name;
   constructor(props) {
     super(props);
-    this.state = { products: [], loading: true };
   }
 
   componentDidMount() {
-    this.populateProductData();
   }
 
   renderProductTable(products) {
@@ -47,7 +45,8 @@ class Product extends Component<ProductProps, ProductStates> {
 
   render() {
     const { loading, products } = this.props;
-    let contents = loading
+    console.log('loading', loading);
+    let contents = (loading === undefined || loading)
       ? <p><em>Loading...</em></p>
       : this.renderProductTable(products);
 
@@ -61,6 +60,7 @@ class Product extends Component<ProductProps, ProductStates> {
   }
 
   async populateProductData() {
+    console.log('populateProductData', this.props.user);
     store.dispatch(Loading());
     const { productService } = this.context;
     const response = await productService.getAllProducts();
@@ -70,10 +70,9 @@ class Product extends Component<ProductProps, ProductStates> {
 }
 
 const mapStateToProps = (store: any) => {
-  const { auth, product, system } = store;
-  console.log(system);
+  const { oidc, product, system } = store;
   return {
-    user: auth.user,
+    user: oidc.user,
     products: product.products,
     loading: system.isLoading
   };
