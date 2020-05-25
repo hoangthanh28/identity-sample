@@ -4,7 +4,7 @@ import { CallbackComponent } from 'redux-oidc';
 import { push } from 'react-router-redux';
 import userManager from '../auth/Oidc';
 import store from '../reduxs/index';
-import { setProfileAuth } from '../reduxs/actions/Auth';
+import { userLoaded } from '../reduxs/actions/Auth';
 import { User } from "oidc-client";
 interface Props {
     dispatch: Function;
@@ -15,7 +15,7 @@ class OidcCallback extends React.Component<Props, {}> {
         const { dispatch } = this.props;
         // get the user's previous location, passed during signinRedirect()
         //const redirectPath = user.state.path;
-        store.dispatch(setProfileAuth(user));
+        store.dispatch(userLoaded());
         dispatch(push('/'));
     };
 

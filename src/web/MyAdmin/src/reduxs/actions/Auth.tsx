@@ -1,6 +1,6 @@
 import userManager from '../../auth/Oidc';
 import { USER_SIGNED_OUT } from 'redux-oidc';
-import * as types from '../../constants/ActionTypes';
+import { USER_LOADING, USER_LOADED } from '../../constants/ActionTypes';
 
 export const userSignOut = () => dispatch => {
     dispatch({ type: USER_SIGNED_OUT });
@@ -11,9 +11,13 @@ export const userSignOut = () => dispatch => {
     });
 };
 
-export function setProfileAuth(user: any) {
+export function userLoading() {
     return {
-        type: types.SET_PROFILE_AUTH,
-        user
+        type: USER_LOADING
+    };
+}
+export function userLoaded() {
+    return {
+        type: USER_LOADED
     };
 }

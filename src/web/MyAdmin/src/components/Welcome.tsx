@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 
-export class Home extends Component {
-  static displayName = Home.name;
-
-  render () {
+export class Welcome extends Component {
+  render() {
     return (
       <div>
         <h1>Hello, world!</h1>

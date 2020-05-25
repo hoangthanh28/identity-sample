@@ -48,7 +48,7 @@ export default class CommonService {
     getToken() {
         const reduxState = store.getState();
         const { oidc } = reduxState;
-        console.log('oidc', oidc);
+        console.log('getToken', oidc);
         return (oidc as any).user.access_token;
     }
 

@@ -5,6 +5,7 @@ import { Loading, Loaded } from '../reduxs/actions/System'
 import { StateToPropInterface } from '../interfaces/PagePropsInterface'
 import AppContext from '../AppContext';
 import store from '../reduxs';
+import _ from 'lodash'
 interface ProductProps {
   user: StateToPropInterface['oidc']['user'];
   products: [],
@@ -14,12 +15,8 @@ interface ProductStates {
 }
 
 class Product extends Component<ProductProps, ProductStates> {
-  static displayName = Product.name;
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
+    this.populateProductData();
   }
 
   renderProductTable(products) {
@@ -44,9 +41,11 @@ class Product extends Component<ProductProps, ProductStates> {
   }
 
   render() {
-    const { loading, products } = this.props;
-    console.log('loading', loading);
-    let contents = (loading === undefined || loading)
+
+    const { loading, products, user } = this.props;
+    console.log('product.render', user);
+    // console.log('loading', loading);
+    let contents = (loading === undefined || loading || _.isEmpty(user))
       ? <p><em>Loading...</em></p>
       : this.renderProductTable(products);
 

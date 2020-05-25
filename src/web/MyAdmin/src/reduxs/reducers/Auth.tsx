@@ -1,15 +1,20 @@
-import { SET_PROFILE_AUTH } from '../../constants/ActionTypes';
+import { USER_LOADED, USER_LOADING } from '../../constants/ActionTypes';
 
 const INIT_STATE = {
-    user: {}
+    isLoadingUser: true
 };
 
 export default (state = INIT_STATE, action: any) => {
     switch (action.type) {
-        case SET_PROFILE_AUTH: {
+        case USER_LOADING: {
             return {
                 ...state,
-                user: action.user
+            };
+        }
+        case USER_LOADED: {
+            return {
+                ...state,
+                isLoadingUser: false
             };
         }
 
