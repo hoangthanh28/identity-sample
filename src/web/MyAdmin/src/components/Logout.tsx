@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { userSignOut } from '../reduxs/actions/Auth'
-import store from '../reduxs/index';
+import userManager from '../auth/Oidc'
 export class Logout extends Component {
   componentDidMount() {
-    store.dispatch<any>(userSignOut());
+    userManager.getUser().then(user => {
+      userManager
+        .signoutRedirect({ prompt: 'login', 'id_token_hint': user?.id_token })
+        .catch(err => console.log(err));
+    });
   }
   render() {
     return (<div></div>);

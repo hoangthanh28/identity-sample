@@ -7,7 +7,6 @@ import Callback from './Callback';
 import Main from './Main';
 interface HomeProps {
   user: StateToPropInterface['oidc']['user'];
-  isLoadingUser: boolean
 }
 class Home extends Component<HomeProps & RouteComponentProps, {}> {
   render() {
@@ -20,10 +19,9 @@ class Home extends Component<HomeProps & RouteComponentProps, {}> {
   }
 }
 const mapStateToProps = (store: any) => {
-  const { oidc, auth } = store;
+  const { oidc } = store;
   return {
-    user: oidc.user,
-    isLoadingUser: auth.isLoadingUser
+    user: oidc.user
   };
 };
 export default connect(mapStateToProps)(Home);
