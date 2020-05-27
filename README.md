@@ -1,5 +1,7 @@
 ## Purpose
 This repository shows the way to use identityserver4 against oauth2 protocol and openid connect.
+
+For the slide of the presentation, please download at [link](/docs/HNVN_IDP_Presentation.pdf)
 ## Architecture
 ![Architecture](/docs/images/architecture.png "Architecture")
 ## Setup
